@@ -185,8 +185,9 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar',
-              {'Sidebar--open': selectedPost !== null})}
+            className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+              'Sidebar--open': selectedPost !== null,
+            })}
           >
             <div className="tile is-child box is-success">
               {selectedPost !== null && (

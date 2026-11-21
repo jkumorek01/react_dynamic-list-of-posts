@@ -84,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({
           </>
         )}
 
-        {!isFormVisible && (
+        {!isFormVisible && !isLoadingComments && (
           <button
             data-cy="WriteCommentButton"
             type="button"
