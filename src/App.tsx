@@ -35,6 +35,9 @@ export const App: React.FC = () => {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
 
+  const [deleteCommentError, setDeleteCommentError] = useState(false);
+  const selectedPostIdRef = React.useRef<number | null>(null);
+
   // Load users
   useEffect(() => {
     client
@@ -88,6 +91,11 @@ export const App: React.FC = () => {
       isActive = false;
     };
   }, [selectedUser]);
+
+  useEffect(() => {
+    selectedPostIdRef.current = selectedPost?.id ?? null;
+  }, [selectedPost?.id]);
+
   // Load comments
 
   useEffect(() => {
@@ -136,13 +144,45 @@ export const App: React.FC = () => {
   // Delete comment
 
   const handleDeleteComment = (commentId: number) => {
+    const commentToDelete = comments?.find(comment => comment.id === commentId);
+
+    const commentIndex =
+      comments?.findIndex(comment => comment.id === commentId) ?? -1;
+
+    const postId = selectedPostIdRef.current;
+
+    if (!commentToDelete || commentIndex === -1 || postId === null) {
+      return;
+    }
+
+    setDeleteCommentError(false);
     setComments(
       currentComments =>
         currentComments?.filter(comment => comment.id !== commentId) ?? null,
     );
 
     client.delete(`/comments/${commentId}`).catch(() => {
-      throw new Error('Failed to delete comment');
+      if (selectedPostIdRef.current !== postId) {
+        return;
+      }
+
+      setComments(currentComments => {
+        const restoredComments = [...(currentComments ?? [])];
+
+        if (restoredComments.some(comment => comment.id === commentId)) {
+          return restoredComments;
+        }
+
+        restoredComments.splice(
+          Math.min(commentIndex, restoredComments.length),
+          0,
+          commentToDelete,
+        );
+
+        return restoredComments;
+      });
+
+      setDeleteCommentError(true);
     });
   };
 
@@ -212,6 +252,7 @@ export const App: React.FC = () => {
                   comments={comments}
                   isLoadingComments={isLoadingComments}
                   commentsError={commentsError}
+                  deleteCommentError={deleteCommentError}
                   onDeleteComment={handleDeleteComment}
                   onAddComment={handleAddComment}
                 />

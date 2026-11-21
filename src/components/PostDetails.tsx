@@ -3,6 +3,7 @@ import type { Post } from '../types/Post';
 import type { Comment } from '../types/Comment';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import PropTypes from 'prop-types';
 
 type Props = {
   selectedPost: Post;
@@ -11,6 +12,7 @@ type Props = {
   commentsError: boolean;
   onDeleteComment: (commentId: number) => void;
   onAddComment: (comment: Comment) => void;
+  deleteCommentError: boolean;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -20,6 +22,7 @@ export const PostDetails: React.FC<Props> = ({
   commentsError,
   onDeleteComment,
   onAddComment,
+  deleteCommentError,
 }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -99,7 +102,38 @@ export const PostDetails: React.FC<Props> = ({
             )}
           </>
         )}
+
+        {deleteCommentError && (
+          <div className="notification is-danger">
+            Could not delete comment.
+          </div>
+        )}
       </div>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  selectedPost: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      postId: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ),
+
+  isLoadingComments: PropTypes.bool.isRequired,
+  commentsError: PropTypes.bool.isRequired,
+  deleteCommentError: PropTypes.bool.isRequired,
+  onAddComment: PropTypes.func.isRequired,
+  onDeleteComment: PropTypes.func.isRequired,
 };

@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import type { User } from '../types/User';
 
 type Props = {
@@ -14,33 +14,20 @@ export const UserSelector: React.FC<Props> = ({
   selectUser,
 }) => {
   const [userList, setUserList] = useState(false);
-  const dropDown = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropDown.current &&
-        event.target instanceof Node &&
-        !dropDown.current.contains(event.target)
-      ) {
-        setUserList(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <div
       data-cy="UserSelector"
-      ref={dropDown}
       className={cn('dropdown', {
         'is-active': userList,
       })}
+      onBlur={event => {
+        const nextTarget = event.relatedTarget as Node | null;
+
+        if (!event.currentTarget.contains(nextTarget)) {
+          setUserList(false);
+        }
+      }}
     >
       <div className="dropdown-trigger">
         <button
