@@ -54,6 +54,7 @@ export const App: React.FC = () => {
     if (selectedUser === null) {
       setPosts(null);
       setSelectedPost(null);
+      setIsLoadingPosts(false);
 
       return () => {
         isActive = false;
@@ -90,6 +91,8 @@ export const App: React.FC = () => {
   // Load comments
 
   useEffect(() => {
+    let isActive = true;
+
     const postId = selectedPost?.id ?? null;
 
     if (postId === null) {
@@ -97,7 +100,9 @@ export const App: React.FC = () => {
       setCommentsError(false);
       setIsLoadingComments(false);
 
-      return;
+      return () => {
+        isActive = false;
+      };
     }
 
     setComments(null);
@@ -107,14 +112,25 @@ export const App: React.FC = () => {
     client
       .get<Comment[]>(`/comments?postId=${postId}`)
       .then(serverComments => {
-        setComments(serverComments);
+        if (isActive) {
+          setComments(serverComments);
+        }
       })
       .catch(() => {
-        setCommentsError(true);
+        if (isActive) {
+          setComments(null);
+          setCommentsError(true);
+        }
       })
       .finally(() => {
-        setIsLoadingComments(false);
+        if (isActive) {
+          setIsLoadingComments(false);
+        }
       });
+
+    return () => {
+      isActive = false;
+    };
   }, [selectedPost?.id]);
 
   // Delete comment

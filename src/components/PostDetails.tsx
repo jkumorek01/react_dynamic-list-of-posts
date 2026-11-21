@@ -42,8 +42,11 @@ export const PostDetails: React.FC<Props> = ({
 
         {isLoadingComments && <Loader />}
 
-        {commentsError && (
-          <div className="notification is-danger" data-cy="CommentsError">
+        {!isLoadingComments && commentsError && (
+          <div
+            className="notification is-danger"
+            data-cy="CommentsError"
+          >
             Something went wrong
           </div>
         )}
@@ -63,7 +66,10 @@ export const PostDetails: React.FC<Props> = ({
                 key={comment.id}
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  <a
+                    href={`mailto:${comment.email}`}
+                    data-cy="CommentAuthor"
+                  >
                     {comment.name}
                   </a>
 
@@ -81,25 +87,23 @@ export const PostDetails: React.FC<Props> = ({
                 </div>
               </article>
             ))}
+
+            {!isFormVisible ? (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setIsFormVisible(true)}
+              >
+                Write a comment
+              </button>
+            ) : (
+              <NewCommentForm
+                postId={selectedPost.id}
+                onAddComment={onAddComment}
+              />
+            )}
           </>
-        )}
-
-        {!isFormVisible && !isLoadingComments && (
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setIsFormVisible(true)}
-          >
-            Write a comment
-          </button>
-        )}
-
-        {isFormVisible && (
-          <NewCommentForm
-            postId={selectedPost.id}
-            onAddComment={onAddComment}
-          />
         )}
       </div>
     </div>
