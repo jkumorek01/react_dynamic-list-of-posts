@@ -1,5 +1,4 @@
 import cn from 'classnames';
-
 import { useState } from 'react';
 import type { User } from '../types/User';
 
@@ -14,10 +13,15 @@ export const UserSelector: React.FC<Props> = ({
   selected,
   selectUser,
 }) => {
-  const [userList, setUserList] = useState<boolean>(false);
+  const [userList, setUserList] = useState(false);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={cn('dropdown', {
+        'is-active': userList,
+      })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -36,19 +40,23 @@ export const UserSelector: React.FC<Props> = ({
 
       {userList && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          {users?.map(user => (
-            <li key={user.id}>
+          <div className="dropdown-content">
+            {users?.map(user => (
               <a
+                key={user.id}
                 href={`#user-${user.id}`}
                 className={cn('dropdown-item', {
                   'is-active': selected === user.id,
                 })}
-                onClick={() => selectUser(user.id)}
+                onClick={() => {
+                  selectUser(user.id);
+                  setUserList(false);
+                }}
               >
                 {user.name}
               </a>
-            </li>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -43,17 +43,21 @@ export const App: React.FC = () => {
         setUsers(serverUsers);
       })
       .catch(() => {
-        // console.error('Failed to load users');
+        throw new Error('Failed to load users');
       });
   }, []);
 
   // Load posts after selecting a user
   useEffect(() => {
+    let isActive = true;
+
     if (selectedUser === null) {
       setPosts(null);
       setSelectedPost(null);
 
-      return;
+      return () => {
+        isActive = false;
+      };
     }
 
     setPosts(null);
@@ -64,16 +68,25 @@ export const App: React.FC = () => {
     client
       .get<Post[]>(`/posts?userId=${selectedUser}`)
       .then(serverPosts => {
-        setPosts(serverPosts);
+        if (isActive) {
+          setPosts(serverPosts);
+        }
       })
       .catch(() => {
-        setPostsError(true);
+        if (isActive) {
+          setPostsError(true);
+        }
       })
       .finally(() => {
-        setIsLoadingPosts(false);
+        if (isActive) {
+          setIsLoadingPosts(false);
+        }
       });
-  }, [selectedUser]);
 
+    return () => {
+      isActive = false;
+    };
+  }, [selectedUser]);
   // Load comments
 
   useEffect(() => {
@@ -113,7 +126,7 @@ export const App: React.FC = () => {
     );
 
     client.delete(`/comments/${commentId}`).catch(() => {
-      // console.error('Failed to delete comment');
+      throw new Error('Failed to delete comment');
     });
   };
 
