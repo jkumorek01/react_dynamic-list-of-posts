@@ -103,7 +103,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       }));
 
       setFormErrors({});
-      setIsSubmitted(false);
     } catch {
       setSubmitError(true);
     } finally {
