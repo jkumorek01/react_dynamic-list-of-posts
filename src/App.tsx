@@ -183,18 +183,13 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost !== null && (
-            <div
-              data-cy="Sidebar"
-              className={cn(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success">
+          <div
+            data-cy="Sidebar"
+            className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar',
+              {'Sidebar--open': selectedPost !== null})}
+          >
+            <div className="tile is-child box is-success">
+              {selectedPost !== null && (
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={comments}
@@ -203,9 +198,9 @@ export const App: React.FC = () => {
                   onDeleteComment={handleDeleteComment}
                   onAddComment={handleAddComment}
                 />
-              </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>
