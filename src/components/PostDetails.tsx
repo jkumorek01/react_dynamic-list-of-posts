@@ -43,10 +43,7 @@ export const PostDetails: React.FC<Props> = ({
         {isLoadingComments && <Loader />}
 
         {!isLoadingComments && commentsError && (
-          <div
-            className="notification is-danger"
-            data-cy="CommentsError"
-          >
+          <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
@@ -66,10 +63,7 @@ export const PostDetails: React.FC<Props> = ({
                 key={comment.id}
               >
                 <div className="message-header">
-                  <a
-                    href={`mailto:${comment.email}`}
-                    data-cy="CommentAuthor"
-                  >
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
 

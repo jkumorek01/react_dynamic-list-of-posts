@@ -111,7 +111,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={formHandler} noValidate>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={formHandler}
+      onReset={clearForm}
+      noValidate
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -228,9 +233,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
         <div className="control">
           <button
-            type="button"
+            type="reset"
             className="button is-link is-light"
-            onClick={clearForm}
             disabled={isLoading}
           >
             Clear
